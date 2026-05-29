@@ -14,8 +14,46 @@
 - `ubuntu-ebf-rk3588/kernel-6.1/arch/arm64/boot/dts/rockchip/overlay/rk3588-lubancat-5-goertek-dual-dsi-panel.dtsi`
 - `ubuntu-ebf-rk3588/kernel-6.1/arch/arm64/boot/dts/rockchip/overlay/Makefile`
 - `ubuntu-ebf-rk3588/config/uEnv/lubancat-5.uEnv`
+- `ubuntu-ebf-rk3588/config/uEnv/lubancat-5-v2.uEnv`
 
 设备树目标是尽量靠拢 `dtb goertek/Test Code.dtsi`。少量差异是为了适配当前 SDK 能编译和绑定，例如使用 SDK 里的背光节点名，以及移除当前内核头文件中不存在的 DSI flag。
+
+## 当前关键状态
+
+`lubancat-5-v2.uEnv` 已经切换到 Goertek 双路 DSI overlay：
+
+```text
+overlays=rk3588-lubancat-5-hdmi0-overlay rk3588-lubancat-5-goertek-dual-dsi-overlay
+```
+
+因此使用下面的 V2 编译命令时，会把双路 MIPI 屏 overlay 写入镜像启动配置：
+
+```bash
+sudo ./build.sh --board=lubancat-5-v2 -c
+```
+
+最近一次设备树修复针对板端启动后出现的 deferred probe：
+
+```text
+panel-simple-dsi: Could not find backlight
+```
+
+对应修复为在 dual DSI overlay 中显式启用 `backlight_dsi0` 和 `backlight_dsi1`，并给 panel 节点补充显示格式信息：
+
+```dts
+&backlight_dsi0 {
+	status = "okay";
+};
+
+&backlight_dsi1 {
+	status = "okay";
+};
+
+bpc = <8>;
+bus-format = <MEDIA_BUS_FMT_RGB888_1X24>;
+```
+
+这样 `panel-simple-dsi` 才能完成绑定，后续 DRM display card、DSI connector 和 `/dev/wf_panel_dsi1` 调试接口才有机会注册。
 
 ## 如何开始编译
 
