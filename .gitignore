@@ -1,0 +1,13 @@
+# Build outputs from ubuntu-ebf-rk3588 SDK
+/ubuntu-ebf-rk3588/build/
+/ubuntu-ebf-rk3588/images/
+
+# Device tree compile outputs
+/dtb goertek/**/*.dtbo
+/dtb goertek/**/*.dtb
+/dtb goertek/**/*.pp.dts
+
+# Common local/editor artifacts
+*.swp
+*~
+.DS_Store

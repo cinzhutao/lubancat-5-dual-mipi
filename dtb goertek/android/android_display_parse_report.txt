@@ -1,0 +1,147 @@
+Android live.dtb display extraction report
+======================================================================
+DTB: valid, magic=0xd00dfeed, total_size=307328 bytes, version=17
+
+Corrected key findings:
+- dsi0 status: okay
+- dsi1 status: okay
+- dsi0 compatible: rockchip,rk3588-mipi-dsi2
+- dsi0 has rockchip,dual-channel -> phandle 263 (/dsi@fde30000)
+- rockchip,lane-rate = 1250000 Kbps
+- panel compatible = simple-panel-dsi
+- dsi,flags = 0xe03
+- dsi,format = 0
+- dsi,lanes = 8  <-- Android working config uses 8
+- timing clock-frequency = 856000000
+- hactive x vactive = 2664 x 2880
+- porch/sync H = back 200, front 400, sync 4
+- porch/sync V = back 10, front 30, sync 1
+- DSC DTS: compressed-data present, slice-width=666, slice-height=1440, version=1.1
+
+Important dmesg lines:
+  [    3.045656] mali fb000000.gpu: Kernel DDK version g18p0-01eac0
+  [    3.081785] mali fb000000.gpu: bin=0
+  [    3.081988] mali fb000000.gpu: leakage=14
+  [    3.082049] debugfs: Directory 'fb000000.gpu-mali' with parent 'vdd_gpu_s0' already present!
+  [    3.087286] mali fb000000.gpu: pvtm=867
+  [    3.087759] mali fb000000.gpu: pvtm-volt-sel=3
+  [    3.090474] mali fb000000.gpu: avs=0
+  [    3.091206] mali fb000000.gpu: r0p0 status 5 not found in HW issues table;
+  [    3.091231] mali fb000000.gpu: falling back to closest match: r0p0 status 0
+  [    3.091248] mali fb000000.gpu: Execution proceeding normally with fallback match
+  [    3.091270] mali fb000000.gpu: GPU identified as 0x7 arch 10.8.6 r0p0 status 0
+  [    3.091362] mali fb000000.gpu: No priority control manager is configured
+  [    3.091860] mali fb000000.gpu: No memory group manager is configured
+  [    3.091922] mali fb000000.gpu: Protected memory allocator not available
+  [    3.093690] mali fb000000.gpu: Capping CSF_FIRMWARE_TIMEOUT to CSF_FIRMWARE_PING_TIMEOUT
+  [    3.094404] mali fb000000.gpu: l=15000 h=85000 hyst=5000 l_limit=0 h_limit=800000000 h_table=0
+  [    3.102035] mali fb000000.gpu: Probed as mali0
+  [    3.129573] dw-mipi-dsi2 fde20000.dsi: dsc pic_width change from 2664 to 1332
+  [    3.129621] rockchip-drm display-subsystem: bound fde20000.dsi (ops dw_mipi_dsi2_ops)
+  [    3.129636] rockchip-drm display-subsystem: bound fde30000.dsi (ops dw_mipi_dsi2_ops)
+  [    3.152863] rockchip-vop2 fdd90000.vop: [drm:vop2_crtc_atomic_enable] Update mode to 2664x2880p90, type: 16(if:60, flag:0x1) for vp2 dclk: 856000000
+  [    3.152881] rockchip-vop2 fdd90000.vop: [drm:vop2_crtc_atomic_enable] Enable DSC0 slice:666x1440, slice num:2
+  [    3.153660] rockchip-drm display-subsystem: [drm] fb0: rockchipdrmfb frame buffer device
+  [    3.153764] rockchip-vop2 fdd90000.vop: [drm:vop2_crtc_enable_dsc] DSC0: txp:214000000 div:0, pxl:214000000 div:0, dsc:107000000 div:1
+  [    3.153806] rockchip-vop2 fdd90000.vop: [drm:vop2_crtc_enable_dsc] DSC1: txp:214000000 div:0, pxl:214000000 div:0, dsc:107000000 div:1
+  [    3.154441] [drm] Initialized rockchip 3.0.0 20140818 for display-subsystem on minor 0
+  [    5.303356] mali fb000000.gpu: Loading Mali firmware 0x1010000
+  [    5.305177] mali fb000000.gpu: Mali firmware git_sha: ee476db42870778306fa8d559a605a73f13e455c 
+  [    6.303455] dw-mipi-dsi2 fde20000.dsi: [drm:dw_mipi_dsi2_encoder_atomic_enable] final DSI-Link bandwidth: 1250000 x 8 Kbps
+
+Parsed DSC PPS:
+  packet_index: 13
+  version: 1.2
+  bpc: 10
+  line_buf_depth: 11
+  target_bpp: 8.0
+  pic_height: 2880
+  pic_width: 2664
+  slice_height: 1440
+  slice_width: 666
+  chunk_size: 666
+  head: 12 00 00 AB 30 80 0B 40 0A 68 05 A0 02 9A 02 9A 02 00 02 A1 00 20 85 EE 00 09 00 0F 00 16 00 0F
+
+Parsed Android panel-init-sequence:
+  total bytes = 276
+  packets = 18
+  00: type=0x39, delay=0, len=2, payload_head=B0 00
+  01: type=0x39, delay=0, len=2, payload_head=FF 00
+  02: type=0x39, delay=0, len=28, payload_head=B1 00 18 18 00 18 18 00 18 18 00 18 18 00 18 18 00 18 18 00 18 18 00 18 18 00 18 18
+  03: type=0x39, delay=0, len=2, payload_head=FF 01
+  04: type=0x39, delay=0, len=37, payload_head=CC 8D E0 01 32 32 32 32 32 32 32 32 32 00 49 81 2C 00 40 00 08 0C 00 40 40 00 00 00 00 00 00 00
+  05: type=0x39, delay=0, len=2, payload_head=FF 01
+  06: type=0x39, delay=0, len=2, payload_head=EC 20
+  07: type=0x39, delay=0, len=2, payload_head=FF 00
+  08: type=0x39, delay=0, len=2, payload_head=03 01
+  09: type=0x39, delay=0, len=2, payload_head=36 02
+  10: type=0x39, delay=0, len=3, payload_head=51 FF FF
+  11: type=0x39, delay=0, len=2, payload_head=65 90
+  12: type=0x39, delay=0, len=2, payload_head=FF 01
+  13: type=0x0A, delay=0, len=128, payload_head=12 00 00 AB 30 80 0B 40 0A 68 05 A0 02 9A 02 9A 02 00 02 A1 00 20 85 EE 00 09 00 0F 00 16 00 0F
+  14: type=0x39, delay=0, len=2, payload_head=FF 00
+  15: type=0x39, delay=0, len=2, payload_head=B0 00
+  16: type=0x39, delay=0, len=1, payload_head=29
+  17: type=0x39, delay=0, len=1, payload_head=11
+
+Raw selected node properties:
+/dsi@fde20000:
+  compatible = "rockchip,rk3588-mipi-dsi2"
+  reg = <0 0xfde20000 0 0x10000>
+  phys = <&{/phy@feda0000}>
+  phy-names = "dcphy"
+  status = "okay"
+  rockchip,dual-channel = <&{/dsi@fde30000}>
+  rockchip,lane-rate = <0x1312d0>
+
+/dsi@fde20000/panel@0:
+  status = "okay"
+  compatible = "simple-panel-dsi"
+  reg = ""
+  backlight = <&{/backlight}>
+  power-supply = <&{/mipi-dsi0-power-regulator}>
+  reset-gpios = <0x10c 4 1>
+  enable-delay-ms = <0x23>
+  prepare-delay-ms = <6>
+  reset-delay-ms = <0xa>
+  init-delay-ms = <0xbb8>
+  unprepare-delay-ms = ""
+  disable-delay-ms = <0x14>
+  size,width = <0x4a>
+  size,height = <0x85>
+  dsi,flags = <0xe03>
+  dsi,format = ""
+  dsi,lanes = <8>
+  compressed-data = true
+  slice-width = <0x29a>
+  slice-height = <0x5a0>
+  version-major = <1>
+  version-minor = <1>
+
+/dsi@fde20000/panel@0/display-timings/timing0:
+  clock-frequency = <0x33058600>
+  hactive = <0xa68>
+  vactive = <0xb40>
+  hback-porch = <0xc8>
+  hfront-porch = <0x190>
+  hsync-len = <4>
+  vback-porch = <0xa>
+  vfront-porch = <0x1e>
+  vsync-len = <1>
+
+/dsi@fde30000:
+  compatible = "rockchip,rk3588-mipi-dsi2"
+  reg = <0 0xfde30000 0 0x10000>
+  phys = <&{/phy@fedb0000}>
+  phy-names = "dcphy"
+  status = "okay"
+
+/phy@feda0000:
+  compatible = "rockchip,rk3588-mipi-dcphy"
+  reg = <0 0xfeda0000 0 0x10000>
+  status = "okay"
+
+/phy@fedb0000:
+  compatible = "rockchip,rk3588-mipi-dcphy"
+  reg = <0 0xfedb0000 0 0x10000>
+  status = "okay"
